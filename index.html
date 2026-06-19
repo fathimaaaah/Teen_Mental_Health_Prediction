@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teen Mental Health Prediction</title>
+<style>
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+}
+
+.container{
+    width:700px;
+    margin:auto;
+    margin-top:30px;
+    background:#1e293b;
+    padding:30px;
+    border-radius:15px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+#result{
+    margin-top:20px;
+    font-size:20px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Teen Mental Health Prediction</h1>
+
+<input type="number" id="age" placeholder="Age">
+
+<select id="gender">
+<option value="0">Female</option>
+<option value="1">Male</option>
+</select>
+
+<input type="number" id="daily_social_media_hours" placeholder="Daily Social Media Hours">
+
+<input type="number" id="platform_usage" placeholder="Platform Usage">
+
+<input type="number" id="sleep_hours" placeholder="Sleep Hours">
+
+<input type="number" id="screen_time_before_sleep" placeholder="Screen Time Before Sleep">
+
+<input type="number" id="academic_performance" placeholder="Academic Performance">
+
+<input type="number" id="physical_activity" placeholder="Physical Activity">
+
+<input type="number" id="social_interaction_level" placeholder="Social Interaction Level">
+
+<input type="number" id="stress_level" placeholder="Stress Level">
+
+<input type="number" id="anxiety_level" placeholder="Anxiety Level">
+
+<input type="number" id="addiction_level" placeholder="Addiction Level">
+
+<input type="number" id="mental_health_risk_score" placeholder="Mental Health Risk Score">
+
+<input type="number" id="sleep_quality" placeholder="Sleep Quality">
+
+<select id="digital_wellbeing_flag">
+<option value="0">No Digital Wellbeing</option>
+<option value="1">Digital Wellbeing Enabled</option>
+</select>
+
+<button onclick="predict()">Predict</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+async function predict(){
+
+const payload = {
+age: parseInt(document.getElementById("age").value),
+gender: parseInt(document.getElementById("gender").value),
+daily_social_media_hours: parseFloat(document.getElementById("daily_social_media_hours").value),
+platform_usage: parseInt(document.getElementById("platform_usage").value),
+sleep_hours: parseFloat(document.getElementById("sleep_hours").value),
+screen_time_before_sleep: parseFloat(document.getElementById("screen_time_before_sleep").value),
+academic_performance: parseFloat(document.getElementById("academic_performance").value),
+physical_activity: parseFloat(document.getElementById("physical_activity").value),
+social_interaction_level: parseFloat(document.getElementById("social_interaction_level").value),
+stress_level: parseInt(document.getElementById("stress_level").value),
+anxiety_level: parseInt(document.getElementById("anxiety_level").value),
+addiction_level: parseInt(document.getElementById("addiction_level").value),
+mental_health_risk_score: parseFloat(document.getElementById("mental_health_risk_score").value),
+sleep_quality: parseInt(document.getElementById("sleep_quality").value),
+digital_wellbeing_flag: parseInt(document.getElementById("digital_wellbeing_flag").value)
+};
+
+const response = await fetch(
+"http://127.0.0.1:8000/predict",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(payload)
+}
+);
+
+const data = await response.json();
+console.log(data);
+alert(JSON.stringify(data));
+document.getElementById("result").innerHTML =
+`
+<h2>${data.risk_level}</h2>
+<p>Depression Probability: ${data.depression_probability}</p>
+<p>${data.recommendation}</p>
+`;
+}
+</script>
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
